@@ -24,12 +24,17 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api/:date?", (req,res,next)=>{
-  req.unixtime=new Date(req.params.date).getTime();
-  req.utctime=new Date(req.params.date);
-  next();
-  },(req,res)=>{
-    res.json({unix:req.unixtime.toString(),utc:req.utctime.toString()});
+// your first API endpoint... 
+app.get("/api/:date?", function (req, res) {
+  req.params.date = req.params.date || new Date().getTime();
+  var date = parseInt(req.params.date, 10);
+  var dateObj = new Date(date);
+  if(dateObj.toString() == "Invalid Date"){
+    return res.json({error: "Invalid Date"});
+  }
+  console.log(date);console.log(date.toString());
+  console.log(dateObj);
+  res.json({unix: date, utc: dateObj.toString()});
 });
 
 
@@ -37,6 +42,3 @@ app.get("/api/:date?", (req,res,next)=>{
 var listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
-mytime=new Date('2015-12-25').getTime();
-console.log("utc:"+mytime);
-console.log("unix:"+mytime);
